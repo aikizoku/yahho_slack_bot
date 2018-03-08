@@ -20,28 +20,29 @@ var RECEIVED_EVENT_AMBIENT = "ambient";
 */
 var Botkit = require("botkit");
 var controller = Botkit.slackbot({
-  debug: true
+  debug: false
 });
 var bot = controller.spawn({
   token: process.env.token
 }).startRTM();
 
+/*
+* Google Image Search API
+*/
+var GoogleImageSearch = require("node-google-image-search");
+
 
 
 /********** ↓Botの実装↓ **********/
-createReceive(["yahho", "やっほー", ":yahho:"], function(text) {
-  return "やっほー"
+createReceive(["yahho", "やっほー", ":yahho:"], function(text, completion) {
+  completion("やっほー");
 });
 
-createMentionReceive(["hello", "あいさつ", "アイサツ", "挨拶"], function(text) {
-  return "こんにちは"
+createMentionReceive(["hello", "あいさつ", "アイサツ", "挨拶"], function(text, completion) {
+  completion("こんにちは");
 });
 
-createMentionReceive(["yahho", "やっほー", "ヤッホー"], function(text) {
-  return "やっほー"
-});
-
-createMentionReceive(["totsuzen"], function(text) {
+createMentionReceive(["totsuzen"], function(text, completion) {
   var msg = "";
   msg += "_＿人";
   for (var i = 0; i < text.length; i++) {
@@ -54,7 +55,13 @@ createMentionReceive(["totsuzen"], function(text) {
     msg += "Ｙ";
   }
   msg += "Ｙ￣";
-  return msg
+  completion(msg)
+});
+
+createMentionReceive(["image"], function(text, completion) {
+  var results = GoogleImageSearch(text, function(results) {
+    completion(results[0].link);
+  }, 0, 1);
 });
 /********** ↑Botの実装↑ **********/
 
@@ -63,10 +70,11 @@ createMentionReceive(["totsuzen"], function(text) {
 /*
 * Modules
 */
-
 function createReceive(methods, recieve) {
   controller.hears(methods, [RECEIVED_EVENT_AMBIENT], function(bot, message) {
-    bot.reply(message, recieve(message.text));
+    recieve(message.text, function(result) {
+      bot.reply(message, result);
+    });
   });
 }
 
@@ -80,7 +88,9 @@ function createMentionReceive(methods, recieve) {
   }
   controller.hears(regexpsMethods, [RECEIVED_EVENT_AMBIENT], function(bot, message) {
     var text = extractText(patterns, message.text);
-    bot.reply(message, recieve(text));
+    recieve(text, function(result) {
+      bot.reply(message, result);
+    });
   });
 }
 
