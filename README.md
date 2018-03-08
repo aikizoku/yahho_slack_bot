@@ -9,8 +9,9 @@
 - 問題なければ master にマージする
 
 # デプロイ手順
-- Harokuを使ってゴニョゴニョ
-- tag(version名) を切る
+- Harokuを使ってます
+- masterにマージすると自動でデプロイが走ります
+- tag(version名) を切るのを忘れずに
 
 # 開発環境構築手順
-
+- TBD
