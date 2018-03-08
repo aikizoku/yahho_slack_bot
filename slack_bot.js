@@ -9,7 +9,7 @@ if (!process.env.token) {
 /*
 * 定数定義
 */
-var BOT_NAME = "hima"
+var BOT_NAME = "hima";
 var RECEIVED_EVENT_DIRECT_MESSAGE = "direct_message";
 var RECEIVED_EVENT_DIRECT_MENTION = "direct_mention";
 var RECEIVED_EVENT_MENTION = "mention";
@@ -29,24 +29,31 @@ var bot = controller.spawn({
 
 
 /********** ↓Botの実装↓ **********/
-createMentionReceive("hello", function(text) {
-  return "hello"
+createReceive(["yahho", "やっほー", ":yahho:"], function(text) {
+  return "やっほー"
 });
 
-createMentionReceive("totsuzen", function(text) {
-  var textLen = text.length
-  var msg = ""
-  msg += "_＿人"
-  for (var i = 0; i < textLen; i++) {
-    msg += "人"
+createMentionReceive(["hello", "あいさつ", "アイサツ", "挨拶"], function(text) {
+  return "こんにちは"
+});
+
+createMentionReceive(["yahho", "やっほー", "ヤッホー"], function(text) {
+  return "やっほー"
+});
+
+createMentionReceive(["totsuzen"], function(text) {
+  var msg = "";
+  msg += "_＿人";
+  for (var i = 0; i < text.length; i++) {
+    msg += "人";
   }
-  msg += "人＿\n"
-  msg += `_＞　${text}　＜\n`
-  msg += "_￣Ｙ"
-  for (var i = 0; i < textLen; i++) {
-    msg += "Ｙ"
+  msg += "人＿\n";
+  msg += `_＞　${text}　＜\n`;
+  msg += "_￣Ｙ";
+  for (var i = 0; i < text.length; i++) {
+    msg += "Ｙ";
   }
-  msg += "Ｙ￣"
+  msg += "Ｙ￣";
   return msg
 });
 /********** ↑Botの実装↑ **********/
@@ -56,22 +63,36 @@ createMentionReceive("totsuzen", function(text) {
 /*
 * Modules
 */
-function createMentionReceive(method, recieve) {
-  var pattern = `${BOT_NAME} ${method}`
-  controller.hears(match(pattern), [RECEIVED_EVENT_AMBIENT], function(bot, message) {
-    var text = extractText(pattern, message.text)
+
+function createReceive(methods, recieve) {
+  controller.hears(methods, [RECEIVED_EVENT_AMBIENT], function(bot, message) {
+    bot.reply(message, recieve(message.text));
+  });
+}
+
+function createMentionReceive(methods, recieve) {
+  var patterns = [];
+  var regexpsMethods = [];
+  for (var i = 0; i < methods.length; i++) {
+    var pattern = `${BOT_NAME} ${methods[i]}`;
+    patterns.push(pattern);
+    regexpsMethods.push(regexp(pattern));
+  }
+  controller.hears(regexpsMethods, [RECEIVED_EVENT_AMBIENT], function(bot, message) {
+    var text = extractText(patterns, message.text);
     bot.reply(message, recieve(text));
   });
 }
 
-function match(pattern) {
-  return [`(^${pattern}.*)`]
+function regexp(pattern) {
+  return `(^${pattern}.*)`
 }
 
-function extractText(pattern, messageText) {
-  if (messageText.indexOf(pattern)) {
-    return ""
-  } else {
-    return messageText.slice(pattern.length).trim()
+function extractText(patterns, messageText) {
+  for (var i = 0; i < patterns.length; i++) {
+    var pattern = patterns[i];
+    if (!messageText.indexOf(pattern)) {
+      return messageText.slice(pattern.length).trim()
+    }
   }
 }
