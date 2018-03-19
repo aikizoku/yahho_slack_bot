@@ -1,5 +1,8 @@
 ;
 exports.BotKit = {
+  cron: require("cron"),
+  jobsFactory: require("../jobs/factory.js").JobsFactory,
+
   BotName: "hima",
   ReceivedEventDirectMessage: "direct_message",
   ReceivedEventDirectMention: "direct_mention",
@@ -18,7 +21,20 @@ exports.BotKit = {
     });
     this.bot = this.controller.spawn({
       token: process.env.token
-    }).startRTM();
+    }).startRTM(function(err, bot, payload) {
+      if (err) {
+        console.error("Error: " + err);
+      }
+      this.jobsFactory.bot = bot;
+      this.jobsFactory.botName = this.BotName;
+      var jobs = this.jobsFactory.generate();
+      new this.cron.CronJob({
+        cronTime: "0 */1 * * * 1-5",
+        onTick: jobs,
+        start: true,
+        timeZone: "Asia/Tokyo",
+      });
+    }.bind(this));
     this.googleImageSearch = require("node-google-image-search");
   },
 

@@ -5,6 +5,8 @@ exports.Receives = {
 
   botKit: null,
 
+  GoogleImageSearchCount: 5,
+
   init: function(botKit) {
     this.botKit = botKit;
   },
@@ -43,7 +45,7 @@ exports.Receives = {
         var len = results.length;
         var index = this.random.randint(0, len - 1)
         completion(results[index].link);
-      }.bind(this), 0, 10);
+      }.bind(this), 0, this.GoogleImageSearchCount);
     }.bind(this));
   }
 };
