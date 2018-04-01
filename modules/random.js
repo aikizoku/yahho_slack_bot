@@ -32,4 +32,9 @@ exports.Random = {
       return this.randint(min, max);
     }, this);
   },
+
+  randChoice: function(array) {
+    if (array.length == 0) { return null }
+    return array[this.randint(0, array.length - 1)];
+  }
 }

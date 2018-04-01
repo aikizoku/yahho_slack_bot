@@ -2,6 +2,7 @@
 exports.JobsFactory = {
   m: require("moment"),
   jobs: require("./jobs.js").Jobs,
+  random: require("./../modules/random.js").Random,
 
   bot: null,
   botName: null,
@@ -18,7 +19,7 @@ exports.JobsFactory = {
         if (h == param.hours && m == param.minutes) {
             this.bot.say({
               channel: param.channel,
-              text: param.text,
+              text: this.random.randChoice(param.texts),
             });
         }
       }

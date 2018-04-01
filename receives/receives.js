@@ -2,6 +2,7 @@
 exports.Receives = {
   googleImageSearch: require("node-google-image-search"),
   random: require("./../modules/random.js").Random,
+  string: require("./../modules/string.js").String,
 
   botKit: null,
 
@@ -17,12 +18,12 @@ exports.Receives = {
     });
 
     this.botKit.createReceive(["おはよ", "おはおは", "おはまる", "おは:maru:", "おっはー", "おはヨーグルト"], function(text, completion) {
-      completion("おはよー今日もがんばっていこー");
-    });
+      completion(this.random.randChoice(["おはよー今日もがんばっていこー", "おは:maru:", "おーはー", "おなかすいた"]));
+    }.bind(this));
 
     this.botKit.createReceive(["お疲れ様", ":otsu: :karei:", "おつかれ", "おつおつ"], function(text, completion) {
-      completion("おつかれさまー");
-    });
+      completion(this.random.randChoice(["おつかれさまー", "おつおつー", ":otsu::karei:"]));
+    }.bind(this));
 
     this.botKit.createMentionReceive(["totsuzen"], function(text, completion) {
       var msg = "";
@@ -38,7 +39,7 @@ exports.Receives = {
       }
       msg += "Ｙ￣";
       completion(msg)
-    });
+    }.bind(this));
 
     this.botKit.createMentionReceive(["image"], function(text, completion) {
       var results = this.googleImageSearch(text, function(results) {
@@ -46,6 +47,11 @@ exports.Receives = {
         var index = this.random.randint(0, len - 1)
         completion(results[index].link);
       }.bind(this), 0, this.GoogleImageSearchCount);
+    }.bind(this));
+
+    this.botKit.createMentionReceive(["choice"], function(text, completion) {
+      var texts = this.string.replaceHalfSpace(text).split(" ");
+      completion(this.random.randChoice(texts));
     }.bind(this));
   }
 };
