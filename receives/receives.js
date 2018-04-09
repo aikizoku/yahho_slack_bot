@@ -18,11 +18,11 @@ exports.Receives = {
     });
 
     this.botKit.createReceive(["おはよ", "おはおは", "おはまる", "おは:maru:", "おっはー", "おはヨーグルト"], function(text, completion) {
-      completion(this.random.randChoice(["おはよー今日もがんばっていこー", "おは:maru:", "おーはー", "おなかすいた"]));
+      completion(this.random.randChoice(["おはよー今日もがんばっていこー", "おは:maru:", "おーはー", "おなかすいた", "ねむい"]));
     }.bind(this));
 
     this.botKit.createReceive(["お疲れ様", ":otsu: :karei:", "おつかれ", "おつおつ"], function(text, completion) {
-      completion(this.random.randChoice(["おつかれさまー", "おつおつー", ":otsu::karei:"]));
+      completion(this.random.randChoice(["おつかれさまー", "おつおつー", ":otsu::karei:", "おっつおっつー", "おつおつおっつーおっつっつー"]));
     }.bind(this));
 
     this.botKit.createMentionReceive(["totsuzen"], function(text, completion) {
@@ -53,5 +53,9 @@ exports.Receives = {
       var texts = this.string.replaceHalfSpace(text).split(" ");
       completion(this.random.randChoice(texts));
     }.bind(this));
+
+    this.botKit.createReceive(["ひま", "ヒマ", "暇"], function(text, completion) {
+      completion(this.random.randChoice(["僕もひまー", "一緒に遊ぼう"]));
+    });
   }
 };
