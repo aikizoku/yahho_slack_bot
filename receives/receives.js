@@ -56,6 +56,6 @@ exports.Receives = {
 
     this.botKit.createReceive(["ひま", "ヒマ", "暇"], function(text, completion) {
       completion(this.random.randChoice(["僕もひまー", "一緒に遊ぼう"]));
-    });
+    }.bind(this));
   }
 };
