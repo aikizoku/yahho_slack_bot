@@ -44,6 +44,7 @@ exports.Receives = {
           "おは:maru:",
           "おーはー",
           "おなかすいた",
+          "おはよう、今日も駅にサラリーマンという名の魑魅魍魎が跋扈していたね！",
         ];
         var text = this.random.choice(texts)
         completion(name + "、" + text);
