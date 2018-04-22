@@ -1,26 +1,34 @@
 ;
 exports.JobsFactory = {
-  m: require("moment"),
+  moment: require("moment"),
   jobs: require("./jobs.js").Jobs,
-  random: require("./../modules/random.js").Random,
 
   bot: null,
-  botName: null,
+
+  init: function(bot) {
+    this.bot = bot;
+  },
 
   generate: function() {
-    var params = this.jobs.params;
+    var items = this.jobs.items();
     var onTick = function() {
-      for (var i = 0; i < params.length; i++) {
-        var param = params[i];
-        var d = this.m();
+      for (var i = 0; i < items.length; i++) {
+        var item = items[i];
+        var d = this.moment();
         d.utcOffset("+0900");
-        var h = Number(d.format("H"));
-        var m = Number(d.format("m"));
-        if (h == param.hours && m == param.minutes) {
+        var year = Number(d.format("Y"));
+        var month = Number(d.format("M"));
+        var day = Number(d.format("D"));
+        var hour = Number(d.format("H"));
+        var minute = Number(d.format("m"));
+        var week = Number(d.format("d"));
+        if (item.check(year, month, day, hour, minute, week)) {
+          item.job(function(text) {
             this.bot.say({
-              channel: param.channel,
-              text: this.random.randChoice(param.texts),
+              channel: item.channel,
+              text: text,
             });
+          }.bind(this));
         }
       }
     }.bind(this);

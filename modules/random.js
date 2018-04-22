@@ -3,7 +3,7 @@ exports.Random = {
   seed: Date.now(),
   seedMax: 4294967295,
 
-  random: function() {
+  r: function() {
     var seed = this.seed;
     seed = seed ^ (seed << 13);
     seed = seed ^ (seed >>> 17);
@@ -12,29 +12,29 @@ exports.Random = {
     return (seed >>> 0) / this.seedMax;
   },
 
-  randint: function(min, max) {
-    return Math.floor( this.random()*(max-min+1) ) + min;
+  int: function(min, max) {
+    return Math.floor(this.r()*(max-min+1)) + min;
   },
 
-  randfloat: function(min, max) {
-    return this.random()*(max-min)+min;
+  float: function(min, max) {
+    return this.r()*(max-min)+min;
   },
   
-  randbool: function() {
-    return this.randint(0, 1) === 1;
+  bool: function(perecent) {
+    return this.float(0, 100) < (perecent || 50);
   },
   
-  randarray: function(len, min, max) {
+  array: function(len, min, max) {
     len = len || 100;
     min = min || 0;
     max = max || 100;
     return (len).map(function() {
-      return this.randint(min, max);
+      return this.int(min, max);
     }, this);
   },
 
-  randChoice: function(array) {
+  choice: function(array) {
     if (array.length == 0) { return null }
-    return array[this.randint(0, array.length - 1)];
+    return array[this.int(0, array.length - 1)];
   }
 }

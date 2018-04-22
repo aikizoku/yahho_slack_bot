@@ -1,13 +1,11 @@
 ;
-
 if (!process.env.token) {
   console.log("Error: Specify token in environment");
   process.exit(1);
 }
 
-var botKit = require("./modules/bot_kit.js").BotKit;
-botKit.init();
+var receivesFactory = require("./receives/factory.js").ReceivesFactory;
+var jobsFactory = require("./jobs/factory.js").JobsFactory;
 
-var receives = require("./receives/receives.js").Receives;
-receives.init(botKit);
-receives.create();
+var botKit = require("./modules/bot_kit.js").BotKit;
+botKit.init(receivesFactory, jobsFactory);

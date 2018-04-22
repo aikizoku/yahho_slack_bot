@@ -1,7 +1,8 @@
 ;
 exports.BotKit = {
+  botKit: require("botkit"),
   cron: require("cron"),
-  jobsFactory: require("../jobs/factory.js").JobsFactory,
+  googleImageSearch: require("node-google-image-search"),
 
   BotName: "hima",
   ReceivedEventDirectMessage: "direct_message",
@@ -9,13 +10,10 @@ exports.BotKit = {
   ReceivedEventMention: "mention",
   ReceivedEventAmbient: "ambient",
   
-  botKit: null,
   controller: null,
   bot: null,
-  googleImageSearch: null,
 
-  init: function() {
-    this.botKit = require("botkit");
+  init: function(receivesFactory, jobsFactory) {
     this.controller = this.botKit.slackbot({
       debug: false
     });
@@ -25,28 +23,30 @@ exports.BotKit = {
       if (err) {
         console.error("Error: " + err);
       }
-      this.jobsFactory.bot = bot;
-      this.jobsFactory.botName = this.BotName;
-      var jobs = this.jobsFactory.generate();
+      jobsFactory.init(this.bot);
+      var jobs = jobsFactory.generate();
       new this.cron.CronJob({
-        cronTime: "0 */1 * * * 1-5",
+        cronTime: "0 */1 * * * *",
         onTick: jobs,
         start: true,
         timeZone: "Asia/Tokyo",
       });
     }.bind(this));
-    this.googleImageSearch = require("node-google-image-search");
+    receivesFactory.init(this);
+    receivesFactory.generate();
   },
 
-  createReceive: function(methods, recieve) {
+  generateReceive: function(methods, recieve) {
     this.controller.hears(methods, [this.ReceivedEventAmbient], function(bot, message) {
-      recieve(message.text, function(result) {
-        this.bot.reply(message, result);
+      this.bot.api.users.info({user: message.user}, function(err, info) {
+        recieve(info.user.name, message.text, function(result) {
+          this.bot.reply(message, result);
+        }.bind(this));
       }.bind(this));
     }.bind(this));
   },
 
-  createMentionReceive: function(methods, recieve) {
+  generateMentionReceive: function(methods, recieve) {
     var patterns = [];
     var regexpsMethods = [];
     for (var i = 0; i < methods.length; i++) {
@@ -56,8 +56,10 @@ exports.BotKit = {
     }
     this.controller.hears(regexpsMethods, [this.ReceivedEventAmbient], function(bot, message) {
       var text = this.extractText(patterns, message.text);
-      recieve(text, function(result) {
-        this.bot.reply(message, result);
+      this.bot.api.users.info({user: message.user}, function(err, info) {
+        recieve(info.user.name, text, function(result) {
+          this.bot.reply(message, result);
+        }.bind(this));
       }.bind(this));
     }.bind(this));
   },
