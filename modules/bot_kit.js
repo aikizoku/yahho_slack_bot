@@ -38,10 +38,8 @@ exports.BotKit = {
 
   generateReceive: function(methods, recieve) {
     this.controller.hears(methods, [this.ReceivedEventAmbient], function(bot, message) {
-      this.bot.api.users.info({user: message.user}, function(err, info) {
-        recieve(info.user.name, message.text, function(result) {
-          this.bot.reply(message, result);
-        }.bind(this));
+      recieve(message.user, message.text, function(result) {
+        this.bot.reply(message, result);
       }.bind(this));
     }.bind(this));
   },
@@ -56,11 +54,9 @@ exports.BotKit = {
     }
     this.controller.hears(regexpsMethods, [this.ReceivedEventAmbient], function(bot, message) {
       var text = this.extractText(patterns, message.text);
-      this.bot.api.users.info({user: message.user}, function(err, info) {
-        recieve(info.user.name, text, function(result) {
+        recieve(message.user, text, function(result) {
           this.bot.reply(message, result);
         }.bind(this));
-      }.bind(this));
     }.bind(this));
   },
 

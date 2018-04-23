@@ -4,8 +4,8 @@ exports.Receives = {
   string: require("./../modules/string.js").String,
   googleImageSearch: require("node-google-image-search"),
 
-  UserAikizoku: "aikizoku",
-  UserNinja: "ninja",
+  UserAikizoku: "U7AM13Z3M",
+  UserNinja: "U7AQYK1QU",
   NameAikizoku: "ひろやん",
   NameNinja: "つーちゃん",
 
