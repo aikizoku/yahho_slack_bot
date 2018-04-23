@@ -6,8 +6,8 @@ exports.Receives = {
 
   UserAikizoku: "U7AM13Z3M",
   UserNinja: "U7AQYK1QU",
-  NameAikizoku: "ひろやん",
-  NameNinja: "つーちゃん",
+  NameAikizoku: "aikizokuさん",
+  NameNinja: "ninjaさん",
 
   getUserName: function(user) {
     var name = null;
