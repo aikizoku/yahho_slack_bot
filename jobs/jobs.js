@@ -55,7 +55,7 @@ exports.Jobs = {
         if (1 <= week && week <= 5) {
           var time = (hour * 100) + minute
           if (930 <= time && time <= 1830) {
-            return this.random.bool(0.5);
+            return this.random.bool(0.2);
           }
         }
         return false;
